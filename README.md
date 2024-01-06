@@ -32,9 +32,11 @@ Following Shelton et al. 2022, we corrected the read count of each species in ea
 
 **2a. quant_metabar_no_overdispersion_fixed_alpha.stan:** The amplification bias correction Rscript above calls a Bayesian model run in stan using this script.
 
-**3. Oorc_post_ampbias_plots_and_cleanup.R:** Post amplification bias correction, we generate plots showing correction factors and posterior proportions, and convert the corrected data to the phyloseq format for downstream data analysis, adding sample metadata from *new_prey_meta_7.26.22_CE_KP.csv*.
+### Post amplification bias correction - final data cleanup
 
-**4. Oorc_post_ampbias_QAQC.R:** In this step, we perform two de-duplication steps: first, we identify *technical* replicates (samples run two or more times), generate plots to compare prey species proportion across replicates, and retain the sample with the highest overall read count. Second, we identify *biological* replicates (two or more samples collected from the same individual on the same day), generate plots to compare species proportion across replicates, and retain the sample with the highest overall read count.
+**1. Oorc_post_ampbias_plots_and_cleanup.R:** Post amplification bias correction, we generate plots showing correction factors and posterior proportions, and convert the corrected data to the phyloseq format for downstream data analysis, adding sample metadata from *new_prey_meta_7.26.22_CE_KP.csv*.
+
+**2. Oorc_post_ampbias_QAQC.R:** In this step, we perform two de-duplication steps: first, we identify *technical* replicates (samples run two or more times), generate plots to compare prey species proportion across replicates, and retain the sample with the highest overall read count. Second, we identify *biological* replicates (two or more samples collected from the same individual on the same day), generate plots to compare species proportion across replicates, and retain the sample with the highest overall read count.
 
 We also perform three filtering steps based on taxonomy: first, we remove ASVs not IDed to species after confirming that these ASVs represent a very small (<<<<1%) of the dataset. Next, we merge all ASVs by species and remove all ASVs that assigned to killer whales. Finally, we remove any species who's read count did not make up at least 1% of the reads in at least 1 sample in the dataset.
 
