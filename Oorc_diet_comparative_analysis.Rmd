@@ -1,0 +1,389 @@
+---
+title: Somefish for everyone. spatial and seasonal foraging patterns drive diet differences among North Pacific resident killer whale populations
+author: "Amy M. Van Cise^1,2\\*†^, M. Bradley Hanson^3^, Candice Emmons^3^, Dan Olsen^4^, Craig O. Matkin^4^, Abigail Wells^5^, Kim M. Parsons^3^"
+
+
+output: 
+  bookdown::word_document2:
+    fig_caption: yes
+    reference_docx: RSOS_template.docx
+bibliography: "`r rbbt::bbt_write_bib('bibliography.json', overwrite = TRUE)`" 
+csl: royal-society-open-science.csl
+---
+
+1. School of Aquatic and Fishery Sciences, University of Washington, Seattle, WA
+2. North Gulf Oceanic Society, Visiting Scientist at Northwest Fisheries Science Center, National Oceanic and Atmospheric Administration, Seattle, WA
+3. Northwest Fisheries Science Center, National Marine Fisheries Service, National Oceanic and Atmospheric Administration, Seattle, WA
+4. North Gulf Oceanic Society, Homer, AK
+5. Lynker Technologies, Leesburg, VA, Under contract to Northwest Fisheries Science Center, National Marine Fisheries Service, National Oceanic and Atmospheric Administration, Seattle, WA
+
+<br>
+
+^\*^Corresponding author email: avancise\@gmail.com
+
+<br>
+
+Running page head: Diet trends in southeast Alaska and southern resident killer whales
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, dev = c('pdf','png'))
+
+knitr::opts_chunk$set(
+ fig.width = 10,
+ fig.height = 8,
+ out.width = "80%"
+)
+
+library(tidyverse)
+library(ggsci)
+library(pander)
+library(captioner)
+library(english)
+library(phyloseq)
+library(magrittr)
+library(rbbt)
+library(patchwork)
+library(png)
+
+wd <- "G:/My Drive/02 NWFSC postdoc research/01 Oo fecal DNA/04 Data analysis/prey metabarcoding/"
+
+```
+
+```{r data, cache = FALSE, warning = FALSE, message = FALSE, results = 'hide'}
+
+setwd(wd)
+
+load("Oorc_2016-2021_dada2_QAQC_tax95_newref_halibut_output.Rdata") # dada2 output from dada2QAQC.R
+load("Oorc_95tax_newref_halibut_phyloseq_majortaxfilt.Rdata") # from Oorc_prey_histogram.R
+load("control_sample_alpha_plot.Rdata") # plots from "control_sample_analysis.R"
+load("techrep_plots.Rdata")
+load("Oorc_indrep_sampling_plots_tax95_newref_halibut_ampbias_overdisp_QAQC_08312023.Rdata") # plots from Oorc_post_ampbias_QAQC
+load("Oorc_temporal_prop_plots.Rdata")
+#load("Oorc_95tax_newref_halibut_phyloseq_majortaxfilt_prey_hist_minor_species.Rdata") # from Oorc_prey_histogram.R
+```
+
+<br>
+
+## Summary {-#Summary}
+
+Highly social top marine predators, including many cetaceans, exhibit culturally learned ecological behaviours such as diet preference and foraging strategy that can affect their resilience to competition or anthropogenic impacts. When these species are also endangered, conservation efforts require adaptive management strategies based on a comprehensive understanding of the variability in these behaviours. In the northeast Pacific Ocean, three partially sympatric populations of resident killer whales occupy coastal ecosystems from California to Alaska. One population (southern resident killer whales) is endangered while another (southern Alaska resident killer whales) has exhibited positive abundance trends for the last several decades. Using 185 fecal samples collected from both populations between 2011 and 2021, we compare spatiotemporal and social variability in diet preference to provide insight into differences in foraging patterns that may be linked with the relative success and decline of these populations. We find broad similarity in the diet of the two populations, with differences arising from spatiotemporal and social variability in resource use patterns, especially in the timing of shifts between target prey species. The results described here highlight the importance of comprehensive longitudinal monitoring of foraging ecology to inform adaptive management strategies for endangered, highly social top marine predators.
+
+<br> 
+
+Key Words: diet, foraging, killer whale, metabarcoding, fecal, top marine predator, endangered
+
+###### Page
+
+<br>
+
+## Introduction {-#Introduction}
+In highly social and long-lived top marine predators, including many cetacean species, many important ecological strategies such as diet preferences, foraging locations, and foraging techniques are culturally learned, i.e. vertically transmitted in a social unit  @Boyd1985; @boyd_richerson96; @Laland1992; @laland_hoppitt03; @rendell_whitehead01. This model of cultural learning is often matrilineal or matrifocal @Boyd1985; @Whitehead1998 and can increase the resilience of a species or population on evolutionary timescales @Boyd1985. Conversely, cultural rigidity can decrease resilience to rapid changes to the environment or resource availability on the scale of an individual lifetime @carpenter_brock08; @nykvist_vonheland14. Culturally driven foraging behavior, for example, may be related to social-ecological memory of the regional availability of preferred prey items and group-specific mobility. Rapid changes in the prey resource landscape, on the scale of multiple decades, could challenge the resilience of a social group that relies heavily on the knowledge of specific cultural leaders to respond to novel ecosystem shocks @nykvist_vonheland14 by balancing ecological trade-offs between resource availability and the cost of resource acquisition @stephens_krebs86; @macarthur_pianka66; @schmid-hempel91.
+
+When top marine predator populations are endangered, managers are faced with a diversity of challenges to understanding and managing the drivers of population declines. Data limitations and limited knowledge of synergistic interactions among threats often confound efforts to quantify the effects of multiple stressors. Social structure and cultural learning are likely to increase population- or species-level vulnerability to environmental stressors @Wade2012, yet our understanding of these interactions are often confounded by the research challenges of small sample size and slow response to environmental stressors. In addition, long generation times slow scientists' ability to track demographic responses to specific stressors @brosi_biber09; @schonbrodt_perugini13; @walsh00. The wide geographic ranges of many top marine predators often limit the collection of data and biological samples, especially when paired with limited availability of funding to support longitudinal research and monitoring of top marine predators, which further impede efforts to quantify the effects of stressors such as prey limitation and habitat degradation @brittain_fay22; @case_ambrosius07; @krzywinski_altman13. Field studies of ecological behaviors in most top marine predators are often inhibited by remote, inaccessible habitats and elusive behaviors, which makes it difficult or impossible to directly observe, e.g., foraging behavior. Because of these factors, it is often true that the proximate causes of demographic shifts and population decline are not well understood, leaving policymakers struggling to identify and implement management strategies that will promote the recovery of endangered populations.
+
+Killer whales (*Orcinus orca*) are known for their highly specialized foraging strategies and diet preferences @Ford2009. They are a long-lived species that are slow to reproduce (@wursig_etal17); females calve approximately once every three to five years, and care for their young for their entire lives. In the eastern North Pacific Ocean there are three partially sympatric populations of the 'resident' killer whale ecotype that are known to prey on fish, specifically salmonids (*Oncorhynchus spp*), and are thought to rely heavily on Chinook salmon (*Oncorhynchus tshawytscha*, hereafter "Chinook"): southern Alaska resident killer whales (SARKW, Central - SE Alaska), northern resident killer whales (NRKW, SE Alaska - coastal WA), and southern resident killer whales (SRKW, Northern BC - Central CA). Although all three of these populations have overlapping ranges, social and cultural practices affecting mating decisions have caused genetic isolation and limited gene flow among them @barrett-lennard_ellis01. Since population monitoring began with the advent of photo-ID in the early 1970s, e.g. @bigg82; @Bigg1990; @Ford1984; @Ford2000, the trajectory of the SRKW has been markedly different from the NRKW and SARKW @bigg82. The SRKW population contracted by roughly 30% in the late 1960s due to several years of live capture for the aquarium industry, and by 1971 was reduced to 67 individuals @bigg_wolman75. Since then, their abundance has not consistently recovered, despite an increase in abundance in the 1980s, and today hovers around 70-75 individuals @carretta_etal23. Due to the population's failure to recover and the existence of multiple anthropogenic threats to population recovery - e.g. limited prey resources, POP exposure, vessel traffic and noise - SRKWs were listed as endangered under the U.S. Endangered Species Act in 2005 and by the Committee on the Status of Endangered Wildlife in Canada (COSEWIC) and the Species at Risk Act (SARA) in Canada in 2003 @nmfs; @NMFS2008; @fisheriesandoceanscanada18. 
+
+In contrast, the SARKW and NRKW populations are currently considered to be robust, both exhibiting positive trends in population size @fisheriesandoceanscanada21; @Matkin2014. The SARKW population mainly occupies the northern coastal Gulf of Alaska from Kodiak Island toward southeastern Alaska (@Matkin1999). Between the 1980s and 2010, the SARKW population is estimated to have grown at a rate of approximately 3%, in what is thought to have been rapid growth that may have been tied to a significant recovery of Alaska salmon population abundance during the same time period @Matkin2014. Their demography during this period closely mirrored the demography of NRKW during their period of unrestricted growth from the 1970s until 1996, after which the population declined for a period in response to a decline in prey availability @Matkin2014, @Ford2010. Similar to SRKW and NRKW, SARKW feed primarily on Chinook, chum and coho salmon, with regional and temporal variability in the proportion and preferred species that supplement the diet @olsen_etalNaN; @saulitis_etal00. The relative stability of the SARKW population may be due in part to relatively stable of prey resources @olsen_etalNaN, and salmon populations in this area are not expected to experience significant declines related to climate change @Shelton2021, which is likely to contribute to future stability of the SARKW population.
+
+Several studies examining the effects of salmon abundance on SRKW demographics suggest that prey limitation, specifically Chinook availability, is a possible threat to SRKW survival, along with other known threats such as disturbance @Holt2009, @Joy2019 and inbreeding depression @kardos_etal23. One study focused on the SRKW J Pod found that trends in SRKW body condition are indicative of individual survival likelihood, and have been associated with prey availability @Stewart2021. Between 1979 and 2003, mortality rates in SRKW were correlated with the coast-wide abundance of Chinook salmon @Ford2010. Fecundity in SRKW is lower than in NRKW across all age groups, and annual fecundity rates have been correlated with annual abundance of Chinook salmon @Ward2009; scientists have documented increased birth rates in SRKW in years following a year of high Chinook abundance @Ford2010. Declining birth rates can be attributed to a lack of prey resources or increasing prey heterogeneity in many wild populations @gabriele_etal22; @gallagher_etal22; @kershaw_etal21; @trevail_etal19; @wild_etal19.
+
+Research on the diet of SRKW, conducted since the late 1900s, supports the hypothesis that Chinook salmon are the primary prey source of this population during the summer months (May - September) when these animals are in the Salish Sea, and when the majority of data have been collected @Ford1998; @Ford2009; @Ford2016; @Hanson2010; @Hanson2021; chum salmon also make up a significant portion of the diet in the later summer months. Data from prey tissue samples collected at predation events indicate that Chinook may make up 70% or more of the SRKW diet @Ford2009; @Hanson2010. Data from fecal samples indicates Chinook may be an even larger portion of the diet at some times of the year, but also indicate greater diet diversity than detected via prey tissue samples @Ford2016; @Hanson2021. 
+
+Given the reliance of SRKW on Chinook as a primary prey resource, especially during the summer months in the Salish Sea, managers are concerned about the potential effects of limited food availability on this population, as Chinook in the Salish Sea are currently considered to be at 30-50% of their historical abundance, including both wild and hatchery-born fish @Lackey2006; @losee_etal19. Previous estimates suggest that the SRKW population may eat approximately 60,000 Chinook during summer months, or as much as 400,000 Chinook annually, based on the assumption that this species composes approximately 70-80% of the annual diet of the population @Ford2009; @williams_etal11. In addition to a reduction in abundance compared to historical levels, Chinook salmon in Washington are decreasing in size due to a variety of factors that including fishing and habitat degradation, as well as the effect of predation by SRKW @beamesderfer20; @gustafson_etal07; @ohlberger_etal18; @ricker81. Further, Chinook abundance may continue to decline in abundance in this region due to the effects of climate change @ward_etal16; @Shelton2021; @sullaway_etal21. 
+
+Despite focused research spanning approximately two decades, our current understanding of the diet of SRKW (and resident killer whales more broadly) based on samples collected primarily during the summer and early fall in the Salish Sea, with a small but growing number of samples representing other seasonal and geographic strata @Ford2016; @Hanson2021. These studies indicate that the SRKW diet may include a greater variety of prey species than previously understood, including significant diet contributions from chum and coho salmon, as well as non-salmonid species such as Pacific halibut and lingcod @Ford2016; @Hanson2021. These findings highlight the need to examine seasonal fluctuations in diet during non-summer months, especially as they related to survival and fecundity. To date, studies of SRKW diet have been limited to population-level inference and have not examined the probable effect of pod-specific foraging strategies on temporal diet variability. Pod-specific foraging strategies in response to environmental variability are a key factor linking prey availability to pod-specific likelihood of survival and reproduction @Stewart2021; @Ward2009, therefore describing the fine-scale differences in foraging behavior among SRKW pods is an important step to improving SRKW management. Further, the previous correlation between Chinook abundance and SRKW population dynamics have decoupled since 2010-2012 @nelson_etal23, suggesting possible shifts in SRKW foraging behavior in response to prey limitation, or the possibility that previous studies did not capture the full repertoire of SRKW foraging ecology.
+
+In this study, we build on previously published datasets and analyses of SRKW diet @Ford2016; @Hanson2021 to compare variability in the seasonal diet and foraging habits of SARKW and SRKW using fecal samples collected between 2014 and 2021 and provide new insights into factors contributing to the contrasting trends in abundance of these two populations. Further, we examine high resolution foraging patterns in SRKW, including pod-specific and seasonal variability in diet preferences, to inform the management of target prey resources. 
+
+## Methods {-#Methods}
+
+# 3.1 Sample collection {-#Sample-collection}
+
+Fecal samples were collected during multi-objective field projects focused on SRKW or SARKW, either opportunistically or using targeted focal follows of groups or individuals. Fecal samples were detected visually, by odor, or by the presence of avian scavengers. Samples were collected from the water surface using a fine mesh net with a long handle, and were either scooped directly into a sterile vial (polypropylene or glass) or, if the sample was small, wiped from the net with sterile gauze and placed into a sterile vial. Samples were stored in a cooler on ice packs for up to 8 hours until being transferred to a -20 $^\circ$C or -80 $^\circ$C freezer. Sample metadata, including collection date and sampling location, are available in Supplementary Table 1. Figure \@ref(fig:sampleMap) shows approximate sampling locations for all samples included in the study, and sample numbers for each population annually.
+
+Samples from SRKW were collected under NOAA permits #781-1824, #16163 and #21348, and collection protocols were reviewed and approved under IACUC protocols NWAK-18-01 and A/NW 2014-02 (NWFSC ESA/MMPA 5-year Marine Mammal Research Permit). SARKW fecal samples were collected under NMFS permits #15616 and #20341.
+
+# 3.2 Prey metabarcoding {-#Prey-metabarcoding}
+
+Extraction and amplification protocols for new fecal samples were the same as those used to generate previously published data @Ford2016; @Hanson2010; @Hanson2021, with exceptions noted below. Whole genomic DNA was extracted from a pea-sized subsample of fecal matter using the Qiagen Blood and Tissue extraction kit and the QIAcube&reg; automated extraction robot (Qiagen Sciences, Germantown, MD). The 16S SSU rDNA region was targeted using custom-designed Illumina primers for salmon and groundfish, as described in @Ford2016. Amplification reactions contained 4uL of DNA, 1X Promega GoTaq Flexi buffer (Promega Corp., Madison WI), 3.0mM MgCl2, 0.2mM of each dNTP, 0.1ug/uL of BSA, 0.2uM of each primer, and 2 units of Promega GoTaq Flexi DNA Polymerase. Communities were amplified in a 32-cycle PCR, with cycling conditions as follows: initial denaturation at 94°C for 2 min, followed by 32 cycles of 94°C for 35 sec; 61°C for 1 min; 72°C for 35 sec; and a final extension at 72°C for 5 min. Amplicons were gel cleaned using Qiagen MinElute columns to remove non-target PCR products and primer dimer.
+
+Cleaned amplicons were indexed using two different sets of indices. Samples included from previous publications (SRKW samples collected up to and including some 2019 samples; @Ford2016; @Hanson2021) were indexed using Illumina Nextera forward and reverse index tags, which create a unique combination of indices by using a unique forward primer for each column and a unique reverse primer for each row on a 96-well plate. This indexing PCR was completed using a 50uL reaction containing 8uL of gel purified PCR product, 1X NEB Phusion High-Fidelity master mix (New England BioLabs), 0.2mM of each dNTP, 5uL each of one Illumina Nextera forward and reverse index tag. New samples sequenced for this study were indexed using Illumina Nextera DNA Unique Dual Index (UDI) primers were used (Illumina, Inc.), comprising unique forward and reverse indexes for each well in a 96-well plate in order to reduce the effect of index hopping @Kircher2012. The index PCR was performed in a 40ul reaction containing 8uL of gel purified PCR product, 1uL each of one Illumina Nextera UDI forward and reverse index, and 30uL of Phusion High-Fidelity PCR Master Mix (New England Biolabs). Regardless of the indices used, the indexing PCR conditions remained the same: 72 $^\circ$C for 3 min, 98 $^\circ$C for 30 sec, followed by 12 cycles of 98 $^\circ$C for 10 sec, 55 $^\circ$C for 30 sec, 72C for 30 sec, and a final extension at 72 $^\circ$C for 5 min. Samples were sequenced on four sequencing runs (2018, 2019, and 2 in 2021) using an Illumina MiSeq next generation sequencer (Illumina, Inc.) at Northwest Fisheries Science Center, NOAA Fisheries, Seattle, WA.
+
+# 3.3 Metabarcoding mock communities {-#Metabarcoding-mock-communities}
+Two mock communities, representative of the most common killer whale prey species, were generated from genomic DNA extracted from individual vouchered fish fin or muscle samples. Whole genomic DNA was normalized to a concentration of 0.5ng/ul, based on a qPCR SYBR assay of a fragment of the 16S SSU rRNA gene, before being combined in pre-determined proportions in both a general control (control 1: 15% chinook, 40% lingcod, 5% Pacific herring, 40% Pacific halibut) and a salmonid-specific control (control 2: 20% chinook, 10% coho, 20% chum, 10% rainbow trout, 10% sockeye, 10% pink salmon, 20% Atlantic salmon). Both mock communities were sequenced with the field-collected samples in five technical replicates (totaling 10 mock mixture control samples) in 2018 (n=1 replicate), 2019 (n=2), and 2021 (n=2). 
+
+# 3.4 Sequence alignment and QAQC {-#Sequence-alignment-and-QAQC}
+Sequences from all runs were combined and analyzed using a custom pipeline based on the dada2 package @Callahan2017 in the R computing environment @RCoreTeam2016. This pipeline includes steps for (1) trimming sequences based on general sequence quality, (2) filtering sequences based on a maximum number of expected errors @Edgar2015, (3) learning the error rates for each possible transition, (4) de-replicating sequences by combining and counting identical sequencing reads to reduce computation time, and finally inferring unique amplicon sequence variants (ASVs) from the filtered and trimmed sequences using the previously learned error rates [@Callahan2017]. Once unique ASVs were identified, paired forward and reverse reads were merged and chimeras removed. Taxonomy was assigned to the remaining ASVs using a naïve Bayesian classifier @Wang2007 that relies on a fasta-formatted reference database, which we custom-generated by downloading sequences for all fish and shark species from NCBI GenBank.
+
+Because various sources of laboratory-introduced bias can affect the observed number of reads assigned to a given species, the mock mixture control samples were used to estimate and correct for the effects of errors from, e.g. amplification bias and index hopping @shelton_etal23. The two mock communities sequenced with each run were used to generate species-specific estimates of amplification bias in a hierarchical Bayesian framework, using code generated by Shelton et al. @shelton_etal23. The model was run using three chains of 10,000 iterations (including a 5,000 iteration warm up) and a tree depth of 12. The estimates of amplification bias (alpha; Figure \@ref(fig:controlFigs)) were then used to estimate the true proportion of each species in each sample, and read counts were corrected according to the posterior estimate of the proportion of each species in each sample. Our mock mixtures contained 10 total species (listed above), representing the major species found in the killer whale diet as well as additional species expected in the diet (Pacific herring and Atlantic salmon). Additional species in the diet mixtures were not corrected for read count abundance, but made up a small proportion of most samples and are not considered likely to contribute significantly to amplification bias @shelton_etal23. Supplemental Figures 1a and b show estimates of amplification bias for each of the 10 species in the mock mixtures, as well as proportional diets 1) for species included in mocks before correction, 2) for species included in mocks after they were corrected, and 3) for all species after correction.
+
+Once amplification bias corrections were applied to all samples, prey species were only included in downstream analyses if they represented >1% of the reads in 4 or more samples in the dataset, in order to avoid potential bias from genotyping error or secondary prey (i.e. species eaten by killer whale prey). Species that occur at >1% of the diet in 1-3 samples are considered "minor prey species" and are described in the results, but are not included in downstream analyses because it is unknown whether these represent opportunistic prey or secondary prey (prey eaten by killer whale target prey).
+
+# 3.5 Assignment of individual KW identity to fecal samples {-#Assignment-of-individual-KW-identity-to-fecal-samples}
+
+Using the whole genomic DNA extracted for prey metabarcoding, we genotyped samples at 68 SNP loci in order to determine individual identity associated with each diet sample using Fluidigm SNP genotyping following the protocol previously described in @ford_etal18. Using only the subset of samples that were successfully genotyped at 85% or more of the 68 loci, we generated clusters based on genotype similarity using hierarchical clustering implemented in R @RCoreTeam2016. We then compared the resulting genotype clusters to reference genotypes for all known SRKW and SARKW individuals, and assigned each cluster an individual identity according to the following decision tree:
+
+1. If a single individual is known, and is the sample with the greatest proportion of genotyped loci, this sample becomes the cluster representative;
+2. If multiple individuals are known, the known individual with the greatest proportion of genotyped loci becomes the cluster representative;
+3. If multiple known individuals have the same proportion of genotyped loci, the first one becomes the cluster representative;
+4. If there are no known individuals the individual with the greatest proportion of genotyped loci becomes the cluster representative;
+5. If there are no known individuals and multiple individuals have the same proportion of genotyped loci, the first one becomes the cluster representative.
+
+<br>
+
+# 3.6 Data analysis {-#Data-analysis}
+We conducted all downstream data analyses in R @RCoreTeam2016 using the phyloseq @McMurdie2013 and vegan @Oksanen2019 packages, and generated graphs using ggplot @Wickham2009. Small sample sizes within each population prevented us from fitting a quantitative model to determine the effect of year, season, or pod membership on diet variability within each population. Therefore, we used PERMANOVA analyses to test for statistical significance in diet differences among strata, including between populations broadly, as well as between populations in summer months. Because samples have not been collected from the SARKW during non-summer months, between-population differences in other seasonal strata could not be tested directly. 
+
+We visualized seasonal shifts diet composition within in each population by combining all samples from a given month across all years in the study, and estimating the proportion of each prey species in the diet of each population using a loess smoother with a span of 0.85 in order to reduce sensitivity to within-month variability in diet in favor of broad scale trends. Similarly, within the SRKW population we subdivided samples by pod and aggregated across months for all years in the study, and estimated seasonal proportional abundance of each prey species using a loess smoother with a span of 0.85. 
+
+
+<br>
+
+## 3. Results {-#Results}
+```{r sample_collection}
+
+sample_collection_meta <- read.csv("G:/My Drive/02 NWFSC postdoc research/01 Oo fecal DNA/04 Data analysis/prey metabarcoding/new_prey_meta_7.26.22.csv") %>% 
+  left_join(read.csv("G:/My Drive/02 NWFSC postdoc research/01 Oo fecal DNA/04 Data analysis/prey metabarcoding/Sample_loss_during_QAQC_newref_halibut_08312023.csv"), by = c("Sample" = "SampleID")) %>% 
+  filter(Ind.date_dedup == "Y") %>% 
+  group_by(Population, MiSeq.run, year, month) %>% 
+  summarize(num.samples = n()) %>% 
+  ungroup()
+
+nsamp_ARKW <- ps.sp %>% subset_samples(Population == "ARKW") %>% nsamples()
+nsamp_SRKW <- ps.sp %>% subset_samples(Population == "SRKW") %>% nsamples()
+```
+After quality filtering, a total of `r nsamples(ps.sp)` samples are included in the final dataset (Supplemental Table S1). Fecal samples were collected from the SRKW population in all months except May and July during the years 2011 and 2014-2021; samples were collected from the SARKW in May through September of 2016-2021 (Figure \@ref(fig:sampleMap)). Sample collection was opportunistic in both populations; not all months were covered in all years. Most SRKW samples were collected in September of each year. SRKW samples (n = `r sample_collection_meta %>% filter(Population == "SRKW") %>%  summarize(tot = sum(num.samples)) %>% pull(tot)`) include samples collected from 2011 to 2019 that have been included in previous publications (n = `r sample_collection_meta %>% filter(Population == "SRKW") %>%  filter(!(MiSeq.run %in% c("2021P1","2021P2"))) %>% summarize(tot = sum(num.samples)) %>% pull(tot)`; @Ford2016; @Hanson2010; @Hanson2021), and `r sample_collection_meta %>% filter(Population == "SRKW") %>%  filter(MiSeq.run %in% c("2021P1","2021P2")) %>% summarize(tot = sum(num.samples)) %>% pull(tot)` new samples that were collected between 2019 and 2021, in September (n = `r sample_collection_meta %>% filter(Population == "SRKW") %>% filter(MiSeq.run %in% c("2021P1","2021P2")) %>% filter(month == 9) %>% summarize(tot = sum(num.samples)) %>% pull(tot)`), October (n = `r sample_collection_meta %>% filter(Population == "SRKW") %>% filter(MiSeq.run %in% c("2021P1","2021P2")) %>% filter(month == 10) %>% summarize(tot = sum(num.samples)) %>% pull(tot)`), November (n = `r sample_collection_meta %>% filter(Population == "SRKW") %>% filter(MiSeq.run %in% c("2021P1","2021P2")) %>% filter(month == 11) %>% summarize(tot = sum(num.samples)) %>% pull(tot)`), and December (n = `r sample_collection_meta %>% filter(Population == "SRKW") %>% filter(MiSeq.run %in% c("2021P1","2021P2")) %>% filter(month == 12) %>% summarize(tot = sum(num.samples)) %>% pull(tot)`). SRKW samples represent all months except May and July, with more samples collected during September (n = `r sample_collection_meta %>% filter(Population == "SRKW") %>% filter(month == 9) %>% summarize(tot = sum(num.samples)) %>% pull(tot)`) than other months. Fecal samples collected from the SARKW population (n = `r sample_collection_meta %>% filter(Population == "ARKW") %>% summarize(tot = sum(num.samples)) %>% pull(tot)`) represent May (n = `r sample_collection_meta %>% filter(Population == "ARKW") %>% filter(month ==5) %>% summarize(tot = sum(num.samples)) %>% pull(tot)`), June (n = `r sample_collection_meta %>% filter(Population == "ARKW") %>% filter(month == 6) %>% summarize(tot = sum(num.samples)) %>% pull(tot)`), July (n = `r sample_collection_meta %>% filter(Population == "ARKW") %>% filter(month == 7) %>% summarize(tot = sum(num.samples)) %>% pull(tot)`), August (n = `r sample_collection_meta %>% filter(Population == "ARKW") %>% filter(month == 8) %>% summarize(tot = sum(num.samples)) %>% pull(tot)`), and September (n = `r sample_collection_meta %>% filter(Population == "ARKW") %>% filter(month == 9) %>% summarize(tot = sum(num.samples)) %>% pull(tot)`). SARKW samples from this publication are also included in Olsen et al. @olsen_etalNaN. Table 1 shows the average number of reads per sample at various steps in the quality control pipeline, as well as the average final number of reads per sample. 
+
+# 4.1 Experimental controls and technical replicates {-#Experimental-controls-and-technical-replicates}
+
+Using two mock mixtures of known species' proportions, we found evidence of minimal laboratory-introduced bias due to, e.g. differing amplification inefficiencies, index hopping, etc (Figure \@ref(fig:controlFigs)A). The estimated species-level effects of this bias, shown in Figure \@ref(fig:controlFigs)B, were used to calibrate the same species in the fecal sample dataset. Comparison of technical replicates indicate a high level of consistency in proportional abundance across all species with >1% abundance in each sample (Figure \@ref(fig:technicalReplicates)).
+
+# 4.2 Summary of prey species composition {-#Summary-of-prey-species-composition}
+```{r prey_presence_hist}
+AKps.chinook <- ps.sp %>% 
+  prune_taxa("Oncorhynchus tshawytscha",.) %>% 
+  prune_samples(sample_sums(.) > 0.01,.) %>% 
+  subset_samples(Population == "ARKW")
+
+SRps.chinook <- ps.sp %>% 
+  prune_taxa("Oncorhynchus tshawytscha",.) %>% 
+  prune_samples(sample_sums(.) > 0.01,.) %>% 
+  subset_samples(Population == "SRKW")
+
+AKps.coho <- ps.sp %>% 
+  prune_taxa("Oncorhynchus kisutch",.) %>% 
+  prune_samples(sample_sums(.) > 0.01,.) %>% 
+  subset_samples(Population == "ARKW")
+
+SRps.coho <- ps.sp %>% 
+  prune_taxa("Oncorhynchus kisutch",.) %>% 
+  prune_samples(sample_sums(.) > 0.01,.) %>% 
+  subset_samples(Population == "SRKW")
+
+AKps.chum <- ps.sp %>% 
+  prune_taxa("Oncorhynchus keta",.) %>% 
+  prune_samples(sample_sums(.) > 0.01,.) %>% 
+  subset_samples(Population == "ARKW")
+
+SRps.chum <- ps.sp %>% 
+  prune_taxa("Oncorhynchus keta",.) %>% 
+  prune_samples(sample_sums(.) > 0.01,.) %>% 
+  subset_samples(Population == "SRKW")
+```
+
+Chinook salmon was the most commonly detected species in the dataset, representing >1% of the prey proportion in `r nsamples(AKps.chinook)` SARKW samples and `r nsamples(SRps.chinook)` SRKW samples, and was detected in samples in all months in which samples were collected from both populations (Figure \@ref(fig:speciesPresent). In SRKW samples in which Chinook salmon were present, they comprised an average of `r round(mean(sample_sums(SRps.chinook)*100),digits = 1)`% (range `r round(min(sample_sums(SRps.chinook)*100),digits = 1)` - `r round(max(sample_sums(SRps.chinook)*100),digits = 1)`%) of the prey proportion in a sample. In SARKW samples in which Chinook salmon were present, they made up an average of `r round(mean(sample_sums(AKps.chinook)*100),digits = 1)`% (range `r round(min(sample_sums(AKps.chinook)*100),digits = 1)` - `r round(max(sample_sums(AKps.chinook)*100),digits = 1)`%) of the prey proportion in a sample.
+
+Major non-Chinook prey items, defined as species comprising >1% of the prey proportion in four or more samples in the dataset, varied by population and included chum salmon (*Oncorhynchus keta*), coho salmon (*Oncorhynchus kisutch*), and steelhead salmon (*Oncorhynchus mykiss*), as well as Pacific halibut (*Hippoglossus stenolepis*), arrowtooth flounder (*Atheresthes stomias*), lingcod (*Ophiodon elongatus*), and sablefish (*Anoplopoma fimbria*; Figure \@ref(fig:speciesPresent)). In both killer whale populations, chum salmon ranked second in the number of samples in which it was present (n~SARKW~ = `r nsamples(AKps.chum)`, `r round((nsamples(AKps.chum)/nsamp_ARKW)*100)`%; n~SRKW~ = `r nsamples(SRps.chum)`, `r round((nsamples(SRps.chum)/nsamp_SRKW)*100)`%). Coho salmon were present in substantially more SRKW samples than SARKW samples (n~SARKW~ = `r nsamples(AKps.coho)`, `r round((nsamples(AKps.coho)/nsamp_ARKW)*100)`%; n~SRKW~ = `r nsamples(SRps.coho)`, `r round((nsamples(SRps.coho)/nsamp_SRKW)*100)`%). Chinook, chum, and coho salmon all make up >50% of the prey sequence reads in at least one sample collected in each population. Several of the "major prey species" were present only in SRKW samples, including steelhead and lingcod; however, neither of these species were found in proportions >50% in samples from either population. Arrowtooth flounder and sablefish were present in both SARKW and SRKW samples, but were detected in a larger number of samples from the SARKW population. Arrowtooth flounder were only found in proportions >50% in samples from the SARKW population, while sablefish were only found in proportions >50% in samples from the SRKW population. 
+
+Minor prey species, defined as species making up >1% of 1-3 samples, comprised `r nrow(minor.prey)` species (Table 2). None of these species were detected in samples from both populations; `r minor.prey %>% filter(Population == "SRKW") %>% nrow()` were present only in SRKW samples (sockeye salmon, *Oncorhynchus nerka*; big skate, *Raja binoculata*; Pacific sandab, *Citharichthys sordidus*), primarily from samples collected during winter months. One species (prowfish, *Zaprora silenus*) was detected only in fecal samples from the SARKW population, collected during the "early" summer season @olsen_etalNaN. Most of these species made up a relatively small proportion of each sample (<10%), except big skate, which had a mean proportion of `r minor.prey %>% filter(Species == "big skate") %>% pull("Mean proportion (%)")`% in `r minor.prey %>% filter(Species == "big skate") %>% pull("No. samples")` SRKW samples collected in January and February (n = `r ps.sp %>% subset_samples(Population == "SRKW") %>% subset_samples(as.character(month) %in% c(1,2)) %>% nsamples()` samples, `r round((minor.prey %>% filter(Species == "big skate") %>% pull("No. samples") %>% as.numeric())/(ps.sp %>% subset_samples(Population == "SRKW") %>% subset_samples(as.character(month) %in% c(1,2)) %>% nsamples()), digits = 2) * 100`%). 
+
+Multivariate analysis of variance in diet composition, including only major prey species, indicated significant variance in diet between populations (PERMANOVA R^2^ = `r round(pop_difference["Population","R2"]*100, digits = 1)`%, p-value = `r pop_difference["Population", "Pr(>F)"]`) and among months (R^2^ = `r round(pop_difference["month","R2"]*100, digits = 1)`%, p-value = `r pop_difference["month", "Pr(>F)"]`) and years (R^2^ = `r round(pop_difference["year","R2"]*100, digits = 1)`%, p-value = `r pop_difference["year", "Pr(>F)"]`).  
+
+# 4.3 Seasonal and geographic shifts in proportional diet composition {-#Seasonal-and-geographic-shifts-in-proporiontal-diet-composition}
+
+``` {r seasonal_variability}
+#source("G:/My Drive/02 NWFSC postdoc research/01 Oo fecal DNA/04 Data analysis/prey metabarcoding/Oorc_temporal_prop.R")
+```
+
+In both killer whale populations, Chinook salmon dominated the composition of fecal samples collected during a portion of the summer months. Populations differed in both the timing of switching from Chinook salmon to other prey items in fecal samples, as well as which prey items replaced Chinook salmon in fecal samples (Figure \@ref(fig:seasonalPreyProp)). Similarly, mapping sample location according to the dominant species in each sample indicates distinct patterns of geographic variability in where certain species are targeted by each population, as well as spatiotemporal variability in sampling effort (Figure \@ref(fig:RKWGeoDietVariablity)); however, it is important to note that gut transit time is unknown in killer whales or marine mammals generally, therefore samples may not have been collected in the same area where the prey were originally eaten.
+
+In Alaska, Chinook make up the highest percentage of sample composition in May, decreasing throughout the summer months. Chum salmon were a significant proportion of sample composition throughout all months in the study period (May-September), with a slight increase in June. Chum salmon comprise a greater proportion of the diet in SARKW than in SRKW diets during the same months. Coho salmon make up a much smaller portion of fecal sample composition through most of the summer study period, increasing to approximately 25% of sample composition in August. In September, all three salmon species common in fecal samples were found in lower proportions than the rest of the summer months, and arrowtooth flounder increased in proportion. Chinook and chum dominate (>50% of species composition) samples collected in the Kenai Fjord region (westernmost SARKW sampling region) primarily during May and June (Figure \@ref(fig:RKWGeoDietVariablity)), while in Prince William Sound (eastern SARKW sampling region) samples collected during June-September are dominated by chum and a variety of salmon and non-salmonid species or have no dominant species in the sample.
+
+SRKW fecal sample prey species were dominated by Chinook salmon from March through August; this proportion began to decrease in September. Coho salmon made up an average of 25% of sample composition in September, and in the following months (October through December) chum salmon became the dominant prey item in fecal samples. Samples collected during fall and winter months also had a greater variety of prey species, including sablefish, lingcod, big skate, and steelhead trout. Flatfishes such as Pacific halibut and arrowtooth flounder were not found in large proportions in SRKW fecal samples. While Chinook was found to dominate (>50% of species composition) samples collected throughout the range of SRKW, Chinook-dominated samples are most common around the San Juan Islands in late summer (August-September); samples collected in other areas and months have a greater variety of dominant species, or no dominant species (Figure \@ref(fig:RKWGeoDietVariablity)). 
+
+# 4.4 Pod-specific differences in SRKW diet {-#Pod-specific-difference-in-SRKW-diet}
+
+Pod data were available for a subset of `r length(unique(species_prop_meta_long_SRKW$Sample))` of `r nsamp_SRKW` SRKW samples, including `r species_prop_meta_long_SRKW %>% filter(Pod == "J") %>% group_by(Sample) %>% n_groups()` samples from J pod, `r species_prop_meta_long_SRKW %>% filter(Pod == "K") %>% group_by(Sample) %>% n_groups()` samples from K pod, and `r species_prop_meta_long_SRKW %>% filter(Pod == "L") %>% group_by(Sample) %>% n_groups()` samples from L pod. This sample size precluded a quantitative analysis of variability among pods due to seasonal and annual diet variability within each pod; therefore we qualitatively describe pod-level variability in diet trends by visualizing seasonal diet within each pod (Figure \@ref(fig:seasonalPreyPod)). Fecal samples collected from J pod were dominated by Chinook salmon in early summer months, but Chinook began to decrease in proportion in July and was replaced by coho and then chum salmon between August and January, when Chinook began to increase in proportion once again. Steelhead contributed a small proportion to the prey items found in samples from J pod in January, and lingcod was also found in a small number of samples collected in January.
+
+Very few samples were collected from K pod, so that in most months the diet of this pod cannot be fully characterized using fecal samples. The few samples that were collected were dominated by Chinook salmon early in the year. Coho was more prominent in the September diet of K pod compared to J pod, and both pods focused on chum in October and November. Similar to J pod, small amounts of steelhead and lingcod were found in the diet of K pod during January and February.
+
+Samples collected from L pod were dominated by Chinook salmon through September, and this pod was the last of the three to switch to other prey types. Chum and coho make up a smaller proportion of the diet of L pod in September and October. Limited sampling in October indicates that sablefish were also present in high proportion. L pod was not sampled between the months of October and January, but a single sample from February indicates that this pod also eats lingcod during the winter months.
+
+## 5. Discussion {-#Discussion}
+
+This direct comparison of diet composition between two of the three resident killer whale populations in the Northeast Pacific Ocean indicates that the two populations share similar diet preferences at the broad scale, with population-level differences in spatiotemporal foraging strategy and resource use patterns. Temporal shifts among preferred prey species and spatiotemporal shifts in foraging location highlight the importance of various salmonid species, in addition to key fishes consumed when salmon are less abundant. At the broad scale, population-level differences in diet composition were small (PERMANOVA R^2^ = `r round(pop_difference["Population", "R2"]*100, digits = 2)`), with heavy reliance on Chinook and chum in both populations, and coho to a lesser extent. Samples collected to date indicate that variability between the two populations is likely driven by intra-population spatiotemporal variability, and both pod- and population-level variability in the timing of shifts from one target prey species to another. Because variability in resident killer whale foraging behavior varies along at least three facets (spatial, seasonal, and social), an accurate understanding of resident killer whale foraging ecology will require comprehensive sampling of all seasons, foraging locations, and pods within each population. Further, the detection of shifts in foraging ecology related to anthropogenic disturbance or climate change will require long-term sampling across each of these facets. Lack of representative sampling in any one of these facets may bias our understanding of resident killer whale foraging ecology and limit our ability to properly manage anthropogenic threats to these populations, and should be mitigated with an experimental sampling design that ensures representation of all pods within each population during all months of the year. 
+
+# 5.1 Resource tracking in a changing environment {-#Resource-tracking-in-a-changing-environment}
+
+From a resource tracking framework @abrahms_etal21, the diet and foraging patterns of a population will reflect seasonal and temporal variability in relative abundance and availability of prey species. Consequently, foraging behavior is considered to be affected by resource variability on six axes: abundance, timing, ephemerality, and predictability of resource patches, as well as the spatial configuration and variance of the landscape of resource patches @abrahms_etal21. In addition to the constraints of resource availability, foraging behavior is affected by biological characteristics of the population, including cognitive capacity, physiology, niche breadth, trophic position, life history strategy, and social behavior @abrahms_etal21. 
+
+Resource tracking has been documented in a number of migratory or highly mobile terrestrial and marine species that rely on ephemeral resources @abrahms_etal19; @armstrong_etal16; @coogan_etal12; @duerr_etal15; @fryxell_etal05; @sawyer_kauffman11; these behaviors are often socially learned @oestreich_etal22 and likely to integrate over years or decades of environmental variability @abrahms_etal19. Specialist predators are more likely to exhibit resource tracking behaviors @futuyma_moreno88, as are species with large perceptual ranges @fagan_etal13a; @zollner_lima99, memory capacity @abrahms_etal19; @fagan_etal13a; @nykvist_vonheland14, or high capacity for social learning @galef_giraldeau01; @Jaeggi2010; @kamil_roitblat85; @page_ryan06; @Slagsvold2011; @wild_etal21. Resident killer whales exhibit all of these characteristics. The seasonal and temporal shifts in resident killer whale diet described in this paper may be the result of learned resource tracking behaviors: knowledge of the location and timing of high-quality foraging areas may be transferred vertically along matrilines over generations, or horizontally within pod membership @Whitehead2018. This type of social knowledge transfer provides social species with extensive generational knowledge but can slow the ability of pods to respond to rapid environmental change @Wade2012.
+
+Within this framework, RKW foraging ecology will be affected by changes in the abundance, distribution, or life history of their prey resources. The phenology of salmon migrations is tightly linked with water temperature @Holtby1989; @quinn18. Variability in the topography of river basins drives inter-site variability in the timing of salmon spawning events, which is coupled with annual variability in both river temperature and marine environment to drive the timing of annual returns to natal river basins @Holtby1989; @quinn18. The ephemeral local availability yet consistent timing of salmon runs makes them likely targets of resource tracking, which has been documented in other predators that rely heavily on salmon species @schindler_etal13. Recently, climate change is affecting the timing and predictability of these salmon runs @crozier_etal11; @crozier_etal21; @otero_etal14, and large-scale marine climate events are increasing their ephemerality @sullaway_etal21. The net result is that resident killer whales must contend not only with decreased availability of their primary prey resource, but also a less predictable and more ephemeral resource landscape. The ability of SRKW to respond to these changes is uncertain and could affect the survival likelihood of the population @Wade2012.
+
+In addition to the relative availability of specific prey resources, diet preferences in both resident killer whale populations may be related to regional differences in energy content of prey populations. Prey energy content and relative availability may explain the SRKW shift away from Chinook salmon during the fall and winter months, despite the year-round presence of Chinook salmon within the range of SRKW. In general, Chinook have the highest fat and energy content and are the favored prey when they are available, e.g. @ONeill2014. Within the range of SRKW, Chinook from the Columbia River spring run have the greatest lipid content and therefore energy content per mass; coho and chum have lower lipid content but are similar to Chinook from Puget Sound and the Columbia River fall run @ONeill2014. The observed shift in the SRKW population away from Chinook in the fall and winter months, despite the fact that Chinook are available year-round, may be related to the relative unavailability of mature Chinook from high-energy populations in the fall and winter @ONeill2014, @Ford2009, @Hanson2010. 
+
+During the months when large, high-energy Chinook are less readily available, RKW shift their foraging strategies to focus on chum and coho. Chum make up a larger portion of the diet during these months, and coho are preyed upon for a only a short period of time by both populations, despite having higher energy content than chum @ONeill2014. This apparent preference for chum over coho salmon may be greater availability of chum compared to coho. One reason for this may be indirect competition with local pinniped populations such as Steller sea lions (*Eumatopias jubatus*) and California sea lions (*Zalophus californianus*), as well as commercial fisheries, which together have a significant impact on annual coho abundance @Scordino2022. In Washington, Steller sea lions and California sea lions sharing habitat with SRKW had an annual take of coho salmon similar to commercial fisheries between 2010 and 2013 @Scordino2022. Since 2010, the abundance of each of these species has increased at an annual rate of approximately 8% based on haulout counts @Allyn2020; their consumption of coho is estimated to have doubled since 2010 and may represent a significant pressure on regional coho populations @Allyn2020, @Scordino2022. Similar trends in pinniped abundance have occurred in the range of the SARKW where, e.g., Steller sea lions have increased steadily since the early 2000s, while local harbor seal populations have remained robust @muto21. In northern Washington, these two species together consume more coho than other species of salmon combined, and the majority of their consumption pressure targets smaller size classes across all salmon species @Scordino2022. Because of this, it is possible they are removing coho salmon from the prey pool before they are large enough to be targeted by killer whales, which instead turn to target the larger but less energy-rich chum.
+
+# 5.2 Comparing diet between populations {-#Comparing-diet-between-populations}
+
+Broad-scale diet preferences were similar between SRKW and SARKW populations during the summer months when fecal samples were collected from both populations. During these months, Chinook make up a larger proportion of the SRKW diet overall than the SARKW diet. Chum and coho salmon make up a large part of the remainder of the diets of both populations. Flatfishes, including Pacific halibut and arrowtooth flounder, are also a small but nontrivial component of the summer diet of SARKW. 
+
+SRKW and SARKW exhibited differences in the timing of shifts among major prey items, as well as the degree to which each population relied upon various non-salmonid species as prey. Within the SARKW, the timing of shifts between species correlated strongly with the seasonally consistent use of specific foraging grounds by specific pods. Within the SRKW, all pods exhibited a tendency to converge and forage around the San Juan Islands during the late summer months @Hanson2010; @Hanson2021. The limited available samples from outside those months indicates a likely pod-level differentiation in foraging behavior during fall and winter months, resulting in diet variability across pods and the consumption of a variety of species not detected in SARKW samples. However, species detected only in the SRKW diet (e.g. lingcod, steelhead) were in samples collected during non-summer months; additional sampling from the SARKW population during non-summer months may indicate that this population also targets those species.
+
+Habitat use differed within the SRKW and SARKW; while current observations indicate that all SRKW pods utilize all part of their , e.g. @Hanson2021, recent studies of SARKW habitat use indicate that the range of this population may be geographically subdivided among pods. This difference in foraging behavior warrants continued sampling, with a focus on increasing sampling depth during non-summer months, to be able to fully characterize variability in the diet and foraging ecology of both populations throughout all seasons. Further, it highlights the need to estimate gut transit time in killer whales, which will facilitate a better understanding of where prey have been eaten rather than relying solely on where samples were collected. This increased resolution will be especially important to describing foraging ecology in SRKW, which travel freely throughout the Salish Sea and may deposit fecal samples far from where prey were originally eaten.
+
+Of the minor prey species detected in this study, big skate and sockeye salmon likely represent opportunistic prey items that were preyed upon by SRKW due to their proximity to other preferred prey items. These prey items were largely detected in samples collected during non-summer months in the SRKW population (Table 2), suggesting that opportunistic foraging may increase in frequency outside of the summer months. In both populations, increasing sampling effort during non-summer months may reveal important shifts in diet throughout the remainder of the year @Hanson2021, during which time SARKW may target similar opportunistic dietary items to SRKW, or may prefer difference species based on local availability and energy content. Pacific sandab, observed in samples collected from SRKW, and prowfish, observed in samples collected from SARKW, may both represent secondary prey items, i.e. fishes that were eaten by fishes that then became prey to killer whales.
+
+# 5.3 Pod-level foraging behavior {-#Pod-level-foraging-behavior}
+
+Pod-specific social dynamics are likely to affect both diet and ranging patterns @parsons_etal09. Within both populations, pods exhibit spatial segregation during the months where they have been observed, and long-term stability in seasonal foraging locations @Hauser2007; @olsen_etalNaN likely passed down among generations within pods. Conversely, variability in the availability of preferred prey items has been shown to affect aspects of social structure in predators @kruuk66; @patterson_messier01; @potts_etal19, e.g. some predators form smaller groups, exhibit higher rates of solitary living, or have more extra-range excursions in response to low prey density @sells_etal22; @kamler_etal19. 
+
+In the SRKW population, few samples were available for two of the three SRKW pods, limiting our ability to infer pod-specific foraging behaviors and diet preferences; however, the available sample set allowed us to make qualitative observations about seasonal shifts in diet throughout the year. The pods exhibit timing differences in seasonal shifts from Chinook to other prey items, in addition to differences in preferred prey items during months when Chinook are not the primary prey. For example, results from the small number of samples collected from L pod during the non-summer months suggest that members of this pod consume sablefish in the late fall (Figure \@ref(fig:seasonalPreyPod), and also had higher proportions of halibut than the other pods during non-summer months (Figure \@ref(fig:seasonalPreyPod). Both J and K pods targeted mainly Chinook and chum through the late fall and into the winter months. These pod-level observations, although qualitative, indicate that the intrinsic links between social group, prey preferences, and sampling locations warrant further attention to better understand intra-population variability in foraging behavior, and may shed light on observed shifts in patterns of habitat use in recent years.
+
+Although less is known of group structure in the SARKW population, a recent analysis of SARKW summer foraging behavior indicates group-specific foraging site fidelity and diet differences; Olsen et al. @olsen_etalNaN found that, across a multi-year sampling effort, SARKW pods demonstrated site fidelity to either Prince William Sound or Kenai Fjord, and described notable differences in the diet composition of animals feeding in each of those areas. SARKW diet was correlated with this spatial and social segregation, with the majority of chum-dominated samples collected in Prince William Sound from the AB, AE, AI, and AJ pods and almost all Chinook-dominated samples collected in Kenai Fjord from the AD8, AD16, and AK pods (Figure \@ref(fig:RKWGeoDietVariablity); @olsen_etalNaN). Pods sampled in Kenai Fjord had a diet dominated by Chinook and chum, with only minor contributions from other species. On the other hand, in Prince William Sound the diet was more varied, with greater contributions from chum, flatfishes, sablefish, and coho. Where each pod forages when not in these two areas is considered an important topic of future research effort for the SARKW population (J. Durban, pers. comm.).
+
+Parsons et al. @parsons_etal09 illustrated the importance of quantifying the strength and directionality of relationships between social structure, diet, and prey abundance in SRKW; this study highlights a continued need to elucidate those relationships to accurate describe foraging ecology in RKW populations. However, the links have not been further described due to the challenges associated with maintaining longitudinal studies as well as the inherent challenges in locating killer whales and collecting fecal samples in offshore, unprotected waters, especially during non-summer months. Elucidating this relationship would require comprehensive fecal sampling of all pods during all months of the year, in tandem with ongoing efforts to monitor social structure within the population. As one example, the prevalence of sablefish, a fish previously unknown to be preyed upon by SRKW, in samples collected for the first time from coastal Washington outside the Salish Sea during October illustrates the importance of collecting fecal samples from all pods, throughout the range of the population, and throughout the entire year.
+
+# 5.4 Management considerations and future research {-#Management-considerations-and-future-research}
+
+Climate variability could exacerbate fluctuations in the timing and availability of certain prey species @sullaway_etal21, with downstream effects on predator populations. As highly mobile predators, RKW maintain large foraging grounds, which aides in mitigating variability in the abundance of key prey resources @armstrong_etal16; @fisher_etal21; @okamoto_etal19. Recent research indicates that both SRKW and NRKW populations cover spatial areas large enough to maintain access to sufficient fish abundance in most years, but suggests that SRKW have a marginally higher likelihood of experiencing streaks of low abundance in Chinook prey resources than NRKW @fisher_etal21; @sullaway_etal21. Climate variability and the increase in occurrence of extreme climate events disrupts the ecological dynamics of metapopulations, causing large-scale spatial synchrony across disparate fish stocks including Chinook salmon @sullaway_etal21, which can lead to greater fluctuations in abundance and availability of this resource to its users @schindler_etal10; @oken_etal21; @stier_etal20. While RKW are currently considered to be minimally affected by this phenomenon, contemporary field observations indicate that SRKW are shifting their seasonal occurence within their range and shifting their diet to more available prey items (B. Hanson, unpublished data). Continued climate variability could drive these populations to either increase their range to the north or south in search of supplemental food resources, or decline under conditions of limited food availability.
+
+In both populations, the potential for pod- or region-specific differences in diet composition illustrated in this study indicate that adaptive management strategies may be needed to address dietary needs on a regional or pod-specific basis throughout the year. Within each population, pod-specific diet preferences are likely to have specific effects on individual health, including body condition @Stewart2021 and fecundity @Wasser2017; @velez-espino_etal14. Recent studies indicate pod-specific differences in body condition fluctuations annually, which may be related to pod-specific differences in foraging behavior and foraging success @Stewart2021; across all pods, poor body condition was linked with higher mortality. Further, intra-population variability in prey preference and foraging location, e.g. @Riera2019, @Hauser2007, @Ford2006, @Hanson2013, @Olson2018 are likely to have pod-specific effects on exposure to or ingestion of toxic contaminants @lawson_etal20; @remili_etal23b, as well as rates of interaction with vessels and anthropogenic noise that may alter foraging patterns or reduce foraging success @Holt2009, @Joy2019.
+
+While malnutrition and starvation can be caused by a lack of prey resources, there are alternative pathways leading to the same outcome, one of which is disease. A recent pilot study of fecal parasites indicates that RKW throughout the Northeast Pacific Ocean are heavily infected (>90% of samples) by Anisakid parasites, which they contract from their salmonid prey and can cause severe nutritional stress or starvation in marine mammals (Mastick et al. _in prep_). These parasites have a life cycle that passes through phases in both salmonids and marine mammals, and have increased in salmon in recent decades (@mastick_etal23). While additional efforts are needed to understand the individual- and population-level effects of this parasite, it may be expected that if individuals choosing salmon-heavy diets are regularly infected by Anisakids and therefore regularly nutritionally stressed, over many generations this nutritional stress may lead to population-level shifts in diet preference toward non-salmonid species through the relative success of individuals and pods preying on non-salmonids, with greater energetic budgets leading to a higher rate of survival and reproduction. The SARKW population may provide an ideal natural experiment to test this hypothesis, due to the existence of two geographically distinct foraging locations frequented by different pods within the population, one heavy in Chinook and chum and the other largely represented by non-salmonids @olsen_etalNaN. Monitoring the diet, parasite load, body condition, survival, and reproduction of this population and conducting a comparison between individuals in the two geographic locations would provide key insight into the linked effects of diet and parasite load on survival and reproduction in resident killer whales.
+
+# 5.5 Conclusions {-#Conclusions}
+
+In this study, we build on diet analyses of both SRKW @Ford2016; @Hanson2010; @Hanson2021 and SARKW @olsen_etalNaN, and provide a first comparison of spatiotemporal diet trends between the two populations. We further conduct a qualitative description of pod-specific diet preferences within the SRKW, which indicate the likelihood for intra-population variability in foraging behavior and diet preference. Our results highlight the need to support comprehensive sampling of all SRKW and SARKW pods throughout the year and in all foraging locations in order to make accurate inference about the importance of and relationships between resource availability, foraging ecology, social behavior, and survival in these populations. As climate change, competition with other salmon consumers, and fishing pressure continue to affect the prey resources relied upon by RKW, understanding the extrinsic and intrinsic drivers of variability in diet and foraging patterns may aide in the successful conservation management of both the endangered SRKW and the SARKW populations. 
+
+## ACKNOWLEDGEMENTS {-#ACKNOWLEDGEMENTS}
+
+Thank you to the UW ADVANCE program for hosting regular writing retreats that provide overwhelmed faculty members with the space, time, and caffeinated beverages they need to write scientific papers; this paper would not exist without it.  The views and conclusions contained in this report are those of the authors and should not be interpreted as representing the opinions of the National Fish and Wildlife Foundation or its funding sources. Mention of trade names or commercial products does not constitute their endorsement by the National Fish and Wildlife Foundation or its funding sources.
+
+## FUNDING {-#FUNDING}
+This work was funded by a research grant awarded to K.M. Parsons and the North Gulf Oceanic Society by the National Fish and Wildlife Federation with funding from Shell and SeaWorld. Additional funding to support SRKW sample collection and processing was provided by the National Oceanic and Atmospheric Administration. NEED FUNDING FOR NGOS SAMPLING HERE. 
+
+## DATA ACCESSIBILITY {-#DATA-ACCESSIBILITY}
+All raw sequence data are archived in NCBI Genbank (Accession #XXXXX). All R scripts used to generate this paper are available on GitHub (https://github.com/UW-WADE-lab/NPac-RKW-diet-comparison).
+
+## COMPETING INTERESTS {-#COMPETING-INTERESTS}
+All authors declare that they have no competing interests.
+
+## AUTHOR CONTRIBUTIONS {-#AUTHOR-CONTRIBUTIONS}
+KP and CM originally conceived of this work; sample collection was completed by CE, BH, and DO; sample processing was completed by AW and AVC; bioinformatic data processing, data analysis, and manuscript preparation were completed by AVC; manuscript revision was completed by all co-authors.
+
+
+## LITERATURE CITED {-#LITERATURE-CITED}
+<div id="refs"></div>
+
+<br>
+
+<br>
+
+```{r table1}
+track.mean <- track %>% as.data.frame() %>% summarize_all(c(mean,min,max)) %>% gather(variable, value) %>%
+  separate(variable, c("var", "stat"), sep = "\\_") %>%
+  spread(var, value) %>% 
+  mutate(stat = c("mean","min","max")) %>% 
+  select(-denoisedR) %>% 
+  rename("denoised" = denoisedF) %>% 
+  relocate(input,filtered, .after = stat)
+
+pander(track.mean, split.table = Inf, caption = "Table 1. Mean, minimum, and maximum number of reads per sample at various points along the dada2 QAQC pipeline, used for quality filtering of all samples sequenced for @Ford2016; @Hanson2021, and the present study.", table.alignment.rownames = "left", big.mark = ",")
+```
+
+<br>
+
+<br>
+
+```{r table2}
+rownames(minor.prey) <- NULL
+pander(minor.prey, split.table = Inf, caption = "Table 2. Species making up greater than 1% of 1-3 samples in the final dataset, defined as minor prey species in this study, which are likely opportunistic or secondary prey items.", table.alignment.rownames = "left")
+```
+<br>
+
+<br>
+
+
+```{r sampleMap, fig.cap = "Top: Sampling locations of all samples used in the present study from both the SARKW and SRKW populations. Some sampling locations are approximate, based on location descriptions rather than GPS waypoints. Circles indicate how samples were stratified for within-population geographic analyses. Bottom: Number of fecal samples successfully sequenced from each population across all years in the study, including samples from previously published studies."}
+knitr::include_graphics("G:/My Drive/02 NWFSC postdoc research/01 Oo fecal DNA/04 Data analysis/prey metabarcoding/Oorc_RKW_sampling_effort.png")
+
+```
+<br>
+
+<br>
+
+```{r controlFigs, fig.align = "center", fig.cap = "Left: Estimates of amplification bias in 10 species included in this study's mock mixtures, estimated according to Shelton et al. 2022, and used to correct the proportional abundance of these species in the diet samples included in this study. Right: Two mock mixture control samples sequenced across five MiSeq runs included in the study show the difference between the expected and observed proportion of reads assigned to each species. Black line is 1:1."}
+
+knitr::include_graphics("G:/My Drive/02 NWFSC postdoc research/01 Oo fecal DNA/04 Data analysis/prey metabarcoding/Oorc_control_sample_alpha_plot.png")
+
+```
+
+<br>
+
+<br>
+
+```{r technicalReplicates, fig.cap = "Estimated proportional abundance of common prey species across technical (top) or biological (bottom) replicates. Each bar represents an individual sample, with replicates grouped together; x-axis (sample name) oppressed for clarity. Top: Estimated proportional abundance of common prey species in all technical laboratory replicates included in the study, after correction for amplification bias. Bottom: Estimated proportional abundance of common prey species across biological replicates, i.e. individual whales sampled two or more times in the same day, after correction for amplification bias."}
+
+knitr::include_graphics("G:/My Drive/02 NWFSC postdoc research/01 Oo fecal DNA/04 Data analysis/prey metabarcoding/Oorc_RKW_lab_field_dups.png")
+
+```
+
+<br>
+
+<br>
+
+```{r speciesPresent, fig.cap = "Proportion of samples in which major prey species, i.e. species that represented >1% of the sample in 4 or more samples, were present in each population (top), or made up >50% of the sample (bottom). All samples are aggregated within each population."}
+
+knitr::include_graphics("G:/My Drive/02 NWFSC postdoc research/01 Oo fecal DNA/04 Data analysis/prey metabarcoding/Oorc_prey_presence_plot.png")
+
+```
+
+<br>
+
+<br>
+
+```{r seasonalPreyProp, fig.cap = "Seasonal variability in proportional abundance of major prey species in each population. Samples are aggregated by month and population across all years in the study."}
+
+knitr::include_graphics("G:/My Drive/02 NWFSC postdoc research/01 Oo fecal DNA/04 Data analysis/prey metabarcoding/Oorc_seasonal_plots_legend.png")
+
+```
+
+<br>
+
+<br>
+
+```{r RKWGeoDietVariablity, fig.cap = "Geographic variability in the dominant prey species (>50% of sample) documented in each fecal sample included in this study. Colors represent the month each sample was collected, and shapes represent the dominant prey species in that sample. Left: Geographic variability in dominant species found in samples collected from the SARKW population. Right: Geographic variability in dominant species found in samples collected from the SRKW population. Note that gut transit time is unknown, therefore samples may not have been collected in the same area where the prey were originally eaten."}
+
+knitr::include_graphics("G:/My Drive/02 NWFSC postdoc research/01 Oo fecal DNA/04 Data analysis/prey metabarcoding/Oorc_RKW_dom_species.png")
+
+```
+
+
+<br>
+
+<br>
+
+```{r seasonalPreyPod, fig.cap = "Seasonal variability in proportional abundance of major prey species in each pod within the SRKW population. Samples are aggregated by month and pod across all years in the study."}
+
+knitr::include_graphics("G:/My Drive/02 NWFSC postdoc research/01 Oo fecal DNA/04 Data analysis/prey metabarcoding/Oorc_seasonal_plots_legend_SRKW.png")
+
+```
+
+<br>
+
+###### Page
+Supplemental Figure S1. For each population: (Left) Amplification bias (alpha) estimated according to Shelton et al. 2022 based on mock community sequencing proportions. (Right) Effect of amplification bias correction on proportional species representation in each sample included in the study. In each plot, samples are represented by individual bars, and the proportion of each species is represented by color. Top – Proportion of each of the 10 species to be corrected in each sample, before amplification bias correction. Middle – Proportion of each of the 10 corrected species after amplification bias correction. Bottom – Proportion of all species in each sample after amplification bias correction (including species that were not corrected). Species with proportions <1% of a sample were removed from the bottom plot for ease of viewing.
+
+Supplemental Table S1. Sample collection date and location, as well as additional metadata used to divide samples into strata for statistical analysis or data visualization in this study.
