@@ -61,3 +61,7 @@ Finally, in this script I generate a figure illustrating sample collection by mo
 **1. new_prey_meta_10.26.23_pedPod.csv** Metadata for all samples collected for this study (note not all samples were included after QAQC), including sample LabID, Sample.ID (Field ID), collection date, lat-lon, population, genetic sex, genetic ID (if known), MiSeq run identifier, Pod (SRKW pod membership), pedPod (SRKW pod membership identified by pedigree analysis), dom.sp (major prey species with the most reads in the sample), prey50 (major prey species with >50% of reads in sample).
 
 **2. Oorc_control_metadata.csv** Metadata spreadsheet indicating species proportion in each control sample mock mixture used in the study.
+
+**3. RSOS_template.docx** Template used by Rmd to knit a Word document following the Royal Society Open Science format.
+
+**4. bibliography.json** Bibliography file from Zotero used by Rmd to generate the references cited in the manuscript.
