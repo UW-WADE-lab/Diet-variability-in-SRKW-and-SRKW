@@ -1,0 +1,17 @@
+sample,LabID,control type,year,plate,Oncorhynchus tshawytscha,Ophiodon elongatus,Clupea pallasii,Hippoglossus stenolepis,Oncorhynchus kisutch,Oncorhynchus keta,Oncorhynchus mykiss,Oncorhynchus nerka,Oncorhynchus gorbuscha,Salmo salar,Orcinus orca,P. vitulina,P.phocoena,L.obliquidens
+control2_S73,control2,2,2021,2021P1,15,40,5,40,,,,,,,,,,
+control2_S35,control2,2,2021,2021P2,15,40,5,40,,,,,,,,,,
+control3_S74,control3,3,2021,2021P1,20,,,,10,20,10,10,10,20,,,,
+control3_S36,control3,3,2021,2021P2,20,,,,10,20,10,10,10,20,,,,
+ControlMix-1_S9,ControlMix-1,1,2018,2018,25,25,25,25,,,,,,,,,,
+ControlMix-2_S18,ControlMix-2,2,2018,2018,15,40,5,40,,,,,,,,,,
+ControlMix-3_S27,ControlMix-3,3,2018,2018,20,,,,10,20,10,10,10,20,,,,
+ControlMix-4_S36,ControlMix-4,4,2018,2018,70,,,,,,,,,10,,10,10,
+ControlMix-5_S45,ControlMix-5,5,2018,2018,50,,,,,,,10,,,10,10,10,10
+PreyControlMix-2_S20,PreyControlMix-2,2,2019,2019,15,40,5,40,,,,,,,,,,
+PreyControlMix-2b_S65,PreyControlMix-2b,2,2019,2019,15,40,5,40,,,,,,,,,,
+PreyControlMix-3_S32,PreyControlMix-3,3,2019,2019,20,,,,10,20,10,10,10,20,,,,
+PreyControlMix-3b_S75,PreyControlMix-3b,3,2019,2019,20,,,,10,20,10,10,10,20,,,,
+PreyControlMix-1_S10,PreyControlMix-1,1,2019,2019,25,25,25,25,,,,,,,,,,
+PreyControlMix-1b_S54,PreyControlMix-1b,1,2019,2019,25,25,25,25,,,,,,,,,,
+PreyControlMix-4_S43,PreyControlMix-4,6,2019,2019,50,,,,,,,,,50,,,,

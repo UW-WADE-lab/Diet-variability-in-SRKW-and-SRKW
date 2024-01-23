@@ -36,10 +36,28 @@ Following Shelton et al. 2022, we corrected the read count of each species in ea
 
 **1. Oorc_post_ampbias_plots_and_cleanup.R:** Post amplification bias correction, we generate plots showing correction factors and posterior proportions, and convert the corrected data to the phyloseq format for downstream data analysis, adding sample metadata from *new_prey_meta_7.26.22_CE_KP.csv*.
 
-**2. Oorc_post_ampbias_QAQC.R:** In this step, we perform two de-duplication steps: first, we identify *technical* replicates (samples run two or more times), generate plots to compare prey species proportion across replicates, and retain the sample with the highest overall read count. Second, we identify *biological* replicates (two or more samples collected from the same individual on the same day), generate plots to compare species proportion across replicates, and retain the sample with the highest overall read count.
+**2. Oorc_post_ampbias_QAQC.R:** In this step, I perform two de-duplication steps: first, I identify *technical* replicates (samples run two or more times), generate plots to compare prey species proportion across replicates, and retain the sample with the highest overall read count. Second, I identify *biological* replicates (two or more samples collected from the same individual on the same day), generate plots to compare species proportion across replicates, and retain the sample with the highest overall read count. This script also produces the manuscript figure comparing species proportions among replicates.
 
-We also perform three filtering steps based on taxonomy: first, we remove ASVs not IDed to species after confirming that these ASVs represent a very small (<<<<1%) of the dataset. Next, we merge all ASVs by species and remove all ASVs that assigned to killer whales. Finally, we remove any species who's read count did not make up at least 1% of the reads in at least 1 sample in the dataset.
+I also perform three filtering steps based on taxonomy: first, I remove ASVs not IDed to species after confirming that these ASVs represent a very small (<<<<1%) of the dataset. Next, I merge all ASVs by species and remove all ASVs that assigned to killer whales. Finally, I remove any species whose read count did not make up at least 1% of the reads in at least 1 sample in the dataset.
+
+Finally, in this script I generate a figure illustrating sample collection by month and year within each population, which is later combined with the sampling map.
 
 ### Data analysis
 
+**1. control_sample_analysis.R** This script analyzes control samples and generates the manuscript figure illustrating differences between input and output species proportions in control samples from two different mock mixtures and alpha (bias) values estimated in the amplification bias step.
 
+**2. technical_replicate_analysis.R** This script identifies technical and biological replicates in the dataset and produces the manuscript figure comparing species proportions among replicates.
+
+**3. Oorc_sampling_map.R** This script generates a map showing the sampling location of all samples used in the study. I combine this map with the sampling effort plot produced in a previous step to generate the final manuscript figure.
+
+**4. Oorc_prey_histogram.R** In this script I conduct initial analyses of the data. I first identify and describe minor prey species, then remove these from the dataset. I then generate a series of histograms illustrating: 1) the number of samples with 1,2,3,...n major prey species identified in the sample; 2) the number of samples with prey species X identified in the sample, 3) the number of samples where prey species X represents >50% of the sample.
+
+**5. Oorc_temporal_prop.R** This script includes various analyses and visualizations of temporal patterns in the dataset, including: manuscript figures illustrating seasonal variability in each population as well as among pods within the SRKW; PERMANOVA analyses of temporal and geographic variability; figures exploring annual variability (not used in manuscript due to low sample size).
+
+**6. Oorc_dom_species_geo_distribution.R** This script is used to produce the manuscript figure illustrating geographic and seasonal variability in the dominant species (>50% of sample reads) in each sample used in the study.
+
+### Metadata
+
+**1. new_prey_meta_10.26.23_pedPod.csv** Metadata for all samples collected for this study (note not all samples were included after QAQC), including sample LabID, Sample.ID (Field ID), collection date, lat-lon, population, genetic sex, genetic ID (if known), MiSeq run identifier, Pod (SRKW pod membership), pedPod (SRKW pod membership identified by pedigree analysis), dom.sp (major prey species with the most reads in the sample), prey50 (major prey species with >50% of reads in sample).
+
+**2. Oorc_control_metadata.csv** Metadata spreadsheet indicating species proportion in each control sample mock mixture used in the study.
