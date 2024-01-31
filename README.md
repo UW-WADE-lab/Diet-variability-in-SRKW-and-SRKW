@@ -20,7 +20,7 @@ We used the [dada2](https://benjjneb.github.io/dada2/) pipeline to perform initi
 
 *Note: anyone using code from this script should be careful to ensure that they specify parameters appropriate for their own data. If you publish data using code from these scripts, cite [dada2](https://benjjneb.github.io/dada2/).*
 
-**Rundada2.slurm:** It's ideal to run dada2 on a computing cluster to parallelize functions and save time. This is the script we used to run [dada2QAQC.R] using an HPC managed by [SLURM](https://slurm.schedmd.com/documentation.html).
+**Oorc_fecal_dada2_QAQC.slurm:** It's ideal to run dada2 on a computing cluster to parallelize functions and save time. This is the script we used to run [dada2QAQC.R] using an HPC managed by [SLURM](https://slurm.schedmd.com/documentation.html).
 
 ### Amplification bias correction
 
