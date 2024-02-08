@@ -275,7 +275,7 @@ Thank you to the UW ADVANCE program for hosting regular writing retreats that pr
 This work was funded by a research grant awarded to K.M. Parsons and the North Gulf Oceanic Society by the National Fish and Wildlife Federation with funding from Shell and SeaWorld. Funding to support southern resident killer whale fecal sample collection and processing was provided by the National Oceanic and Atmospheric Administration. Funding for collection of fecal samples from Southern Alaska resident killer whales was provided to the North Gulf Oceanic Society by the Exxon Valdez Trustee Council and the U.S. Marine Mammal Commission.
 
 ## DATA ACCESSIBILITY {-#DATA-ACCESSIBILITY}
-All raw sequence data are archived in NCBI Genbank (Accession #XXXXX). All R scripts used to generate this paper are available on GitHub (https://github.com/UW-WADE-lab/NPac-RKW-diet-comparison).
+All raw sequence data are archived as fastq files in NCBI Genbank (BioProject ID: PRJNA1068648). All R scripts used to generate this paper are available on GitHub (https://github.com/UW-WADE-lab/NPac-RKW-diet-comparison).
 
 ## COMPETING INTERESTS {-#COMPETING-INTERESTS}
 All authors declare that they have no competing interests.
